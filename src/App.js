@@ -6,7 +6,7 @@ const config = {
   couple: {
     groom: "付传宾",
     bride: "牛佳惠",
-    date: "2025-09-20 12:00",
+    date: "2025-09-20 11:30",
   },
   hotel: {
     name: "汀州皇冠国际酒店",
