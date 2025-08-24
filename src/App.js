@@ -13,8 +13,11 @@ const config = {
     address: "福建省龙岩市长汀县环北路51-8号",
   },
   texts: {
-    invitation:
-      "我们诚挚邀请您参加我们的婚礼，见证我们的幸福时刻。期待您的到来！",
+    invitation: [
+      "亲爱的家人朋友们：",
+      "感谢大家一直以来的关心与厚爱！我们诚挚邀请您参加我们的婚礼，见证我们幸福的时刻，共享喜悦与欢乐。",
+      "希望您能准时莅临，与我们一同庆祝这美好的一天！期待您的到来，让我们的婚礼因为您的参与而更加圆满和温暖。"
+    ],
   },
   images: {
     couple: process.env.PUBLIC_URL + "/p1.jpg",    // 新人合照
@@ -75,10 +78,8 @@ function App() {
       }
     }, 3800);
 
-    // 用户滑动/点击屏幕，标记为已操作
     const userAction = () => {
       userInteracted.current = true;
-      // 3.8 秒后恢复自动滚动
       setTimeout(() => (userInteracted.current = false), 3800);
     };
 
@@ -99,24 +100,29 @@ function App() {
         {playing ? "⏸️ 暂停音乐" : "▶️ 播放音乐"}
       </button>
 
+      {/* 第一屏 - 新人 */}
       <section ref={sectionRefs[0]} className="screen" style={{ backgroundImage: `url(${config.images.couple})` }}>
         <div className="overlay">
-          <h1 className="title">{config.couple.groom} ❤ {config.couple.bride}</h1>
-          <p className="date">{config.couple.date}</p>
+          <h1 className="title"><strong>{config.couple.groom} ❤ {config.couple.bride}</strong></h1>
+          <p className="date"><strong>{config.couple.date}</strong></p>
         </div>
       </section>
 
+      {/* 第二屏 - 酒店 */}
       <section ref={sectionRefs[1]} className="screen" style={{ backgroundImage: `url(${config.images.hotel})` }}>
         <div className="overlay">
-          <h2>{config.hotel.name}</h2>
-          <p>{config.hotel.address}</p>
+          <h2><strong>{config.hotel.name}</strong></h2>
+          <p><strong>{config.hotel.address}</strong></p>
         </div>
       </section>
 
+      {/* 第三屏 - 文案 */}
       <section ref={sectionRefs[2]} className="screen" style={{ backgroundImage: `url(${config.images.background})` }}>
         <div className="overlay">
-          <h2>结婚喜讯</h2>
-          <p>{config.texts.invitation}</p>
+          <h2><strong>结婚喜讯</strong></h2>
+          {config.texts.invitation.map((line, idx) => (
+            <p key={idx}><strong>{line}</strong></p>
+          ))}
         </div>
       </section>
     </div>
