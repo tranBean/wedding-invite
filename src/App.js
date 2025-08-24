@@ -17,9 +17,9 @@ const config = {
       "我们诚挚邀请您参加我们的婚礼，见证我们的幸福时刻。期待您的到来！",
   },
   images: {
-    couple: "https://picsum.photos/id/237/800/1200",
-    hotel: "https://picsum.photos/id/1018/800/1200",
-    background: "https://picsum.photos/id/1015/800/1200",
+    couple: process.env.PUBLIC_URL + "/p1.jpg",    // 新人合照
+    hotel: process.env.PUBLIC_URL + "/p2.png",    // 酒店外观
+    background: process.env.PUBLIC_URL + "/p3.jpg", // 通用背景
   },
   music: {
     url: process.env.PUBLIC_URL + "/bgmusic.mp3",
