@@ -22,8 +22,7 @@ const config = {
     background: "https://picsum.photos/id/1015/800/1200",
   },
   music: {
-    //url: "/bgmusic.mp3", // 本地或在线 MP3
-    url: process.env.PUBLIC_URL + "/bgmusic.mp3", // 适配 GitHub Pages
+    url: process.env.PUBLIC_URL + "/bgmusic.mp3",
   },
 };
 // ========================
@@ -32,16 +31,27 @@ function App() {
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef(null);
 
-  // 页面加载时尝试自动播放
+  const sectionRefs = [useRef(null), useRef(null), useRef(null)];
+  const currentIndex = useRef(0);
+  const userInteracted = useRef(false);
+
+  // 页面首次交互自动播放音乐
   useEffect(() => {
-    if (audioRef.current) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => setPlaying(true))
-          .catch(() => setPlaying(false)); // 自动播放被阻止，等待用户点击
+    const startMusic = () => {
+      if (audioRef.current) {
+        audioRef.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
       }
-    }
+      window.removeEventListener("click", startMusic);
+      window.removeEventListener("touchstart", startMusic);
+    };
+
+    window.addEventListener("click", startMusic, { once: true });
+    window.addEventListener("touchstart", startMusic, { once: true });
+
+    return () => {
+      window.removeEventListener("click", startMusic);
+      window.removeEventListener("touchstart", startMusic);
+    };
   }, []);
 
   // 点击按钮播放/暂停
@@ -51,39 +61,59 @@ function App() {
       audioRef.current.pause();
       setPlaying(false);
     } else {
-      audioRef.current.play().catch(() => {
-        setPlaying(false);
-      });
+      audioRef.current.play().catch(() => setPlaying(false));
       setPlaying(true);
     }
   };
 
+  // 自动跳屏逻辑
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!userInteracted.current) {
+        currentIndex.current = (currentIndex.current + 1) % sectionRefs.length;
+        sectionRefs[currentIndex.current].current.scrollIntoView({ behavior: "auto" });
+      }
+    }, 3800);
+
+    // 用户滑动/点击屏幕，标记为已操作
+    const userAction = () => {
+      userInteracted.current = true;
+      // 3.8 秒后恢复自动滚动
+      setTimeout(() => (userInteracted.current = false), 3800);
+    };
+
+    window.addEventListener("scroll", userAction, { passive: true });
+    window.addEventListener("touchstart", userAction);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("scroll", userAction);
+      window.removeEventListener("touchstart", userAction);
+    };
+  }, []);
+
   return (
     <div className="invitation-container">
-      {/* 音乐控件 */}
       <audio ref={audioRef} loop src={config.music.url}></audio>
       <button className="music-btn" onClick={toggleMusic}>
         {playing ? "⏸️ 暂停音乐" : "▶️ 播放音乐"}
       </button>
 
-      {/* 第一屏 - 新人 */}
-      <section className="screen" style={{ backgroundImage: `url(${config.images.couple})` }}>
+      <section ref={sectionRefs[0]} className="screen" style={{ backgroundImage: `url(${config.images.couple})` }}>
         <div className="overlay">
           <h1 className="title">{config.couple.groom} ❤ {config.couple.bride}</h1>
           <p className="date">{config.couple.date}</p>
         </div>
       </section>
 
-      {/* 第二屏 - 酒店 */}
-      <section className="screen" style={{ backgroundImage: `url(${config.images.hotel})` }}>
+      <section ref={sectionRefs[1]} className="screen" style={{ backgroundImage: `url(${config.images.hotel})` }}>
         <div className="overlay">
           <h2>{config.hotel.name}</h2>
           <p>{config.hotel.address}</p>
         </div>
       </section>
 
-      {/* 第三屏 - 文案 */}
-      <section className="screen" style={{ backgroundImage: `url(${config.images.background})` }}>
+      <section ref={sectionRefs[2]} className="screen" style={{ backgroundImage: `url(${config.images.background})` }}>
         <div className="overlay">
           <h2>结婚喜讯</h2>
           <p>{config.texts.invitation}</p>
