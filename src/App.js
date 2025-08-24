@@ -22,7 +22,7 @@ const config = {
   images: {
     couple: process.env.PUBLIC_URL + "/p1.jpg",    // 新人合照
     hotel: process.env.PUBLIC_URL + "/p2.png",    // 酒店外观
-    background: process.env.PUBLIC_URL + "/p3.jpg", // 通用背景
+    background: process.env.PUBLIC_URL + "/p3.png", // 通用背景
   },
   music: {
     url: process.env.PUBLIC_URL + "/bgmusic.mp3",
