@@ -1,38 +1,57 @@
-.App {
-  text-align: center;
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #fdfdfd;
+  color: #600;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.invitation-container {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.screen {
+  position: relative;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  scroll-snap-align: start;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
 }
 
-.App-link {
-  color: #61dafb;
+.overlay {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  color: #b22222;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.title {
+  font-size: 2rem;
+  color: #a00;
+  font-weight: bold;
+}
+
+.date {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.music-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #fff0f0;
+  border: 1px solid #d33;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 1000;
 }

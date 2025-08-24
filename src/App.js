@@ -1,80 +1,82 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useRef } from "react";
+import "./App.css"; // 建议分个 CSS 文件写样式
+
+// ====== Config 区域，所有内容集中这里修改 ======
+const config = {
+  couple: {
+    groom: "付传宾",
+    bride: "牛佳惠",
+    date: "2025-09-20 12:00",
+  },
+  hotel: {
+    name: "汀州皇冠国际酒店",
+    address: "福建省龙岩市长汀县环北路51-8号",
+  },
+  texts: {
+    invitation:
+      "我们诚挚邀请您参加我们的婚礼，见证我们的幸福时刻。期待您的到来！",
+  },
+  images: {
+    couple:
+      "https://picsum.photos/id/237/800/1200", // 占位：新人合照
+    hotel:
+      "https://picsum.photos/id/1018/800/1200", // 占位：酒店外观
+    background:
+      "https://picsum.photos/id/1015/800/1200", // 可用于通用背景
+  },
+  music: {
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // 占位音乐
+  },
+};
+// =============================================
 
 function App() {
-  const [items, setItems] = useState([]);
-  const [form, setForm] = useState({ name: "", description: "" });
-  const [editing, setEditing] = useState(null); // 记录正在编辑的 id
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef(null);
 
-  const fetchItems = async () => {
-    const res = await fetch("http://localhost:8000/api.php");
-    const data = await res.json();
-    setItems(data);
-  };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  const addItem = async () => {
-    await fetch("http://localhost:8000/api.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    setForm({ name: "", description: "" });
-    fetchItems();
-  };
-
-  const deleteItem = async (id) => {
-    await fetch(`http://localhost:8000/api.php?id=${id}`, { method: "DELETE" });
-    fetchItems();
-  };
-
-  const startEdit = (item) => {
-    setEditing(item.id);
-    setForm({ name: item.name, description: item.description });
-  };
-
-  const updateItem = async () => {
-    await fetch(`http://localhost:8000/api.php?id=${editing}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    setForm({ name: "", description: "" });
-    setEditing(null);
-    fetchItems();
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (playing) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setPlaying(!playing);
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Items</h2>
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>
-            <b>{item.name}</b>: {item.description}
-            <button onClick={() => deleteItem(item.id)}>Delete</button>
-            <button onClick={() => startEdit(item)}>Edit</button>
-          </li>
-        ))}
-      </ul>
+    <div className="invitation-container">
+      {/* 音乐控件 */}
+      <audio ref={audioRef} loop src={config.music.url}></audio>
+      <button className="music-btn" onClick={toggleMusic}>
+        {playing ? "⏸️ 音乐暂停" : "▶️ 播放音乐"}
+      </button>
 
-      <h3>{editing ? "Edit Item" : "Add New Item"}</h3>
-      <input
-        placeholder="Name"
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-      />
-      <input
-        placeholder="Description"
-        value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })}
-      />
-      {editing ? (
-        <button onClick={updateItem}>Update</button>
-      ) : (
-        <button onClick={addItem}>Add</button>
-      )}
+      {/* 第一屏 - 新人 */}
+      <section className="screen" style={{ backgroundImage: `url(${config.images.couple})` }}>
+        <div className="overlay">
+          <h1 className="title">
+            {config.couple.groom} ❤ {config.couple.bride}
+          </h1>
+          <p className="date">{config.couple.date}</p>
+        </div>
+      </section>
+
+      {/* 第二屏 - 酒店 */}
+      <section className="screen" style={{ backgroundImage: `url(${config.images.hotel})` }}>
+        <div className="overlay">
+          <h2>{config.hotel.name}</h2>
+          <p>{config.hotel.address}</p>
+        </div>
+      </section>
+
+      {/* 第三屏 - 文案 */}
+      <section className="screen" style={{ backgroundImage: `url(${config.images.background})` }}>
+        <div className="overlay">
+          <h2>结婚喜讯</h2>
+          <p>{config.texts.invitation}</p>
+        </div>
+      </section>
     </div>
   );
 }
