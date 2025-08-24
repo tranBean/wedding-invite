@@ -22,7 +22,8 @@ const config = {
     background: "https://picsum.photos/id/1015/800/1200",
   },
   music: {
-    url: "/bgmusic.mp3", // 本地或在线 MP3
+    //url: "/bgmusic.mp3", // 本地或在线 MP3
+    url: process.env.PUBLIC_URL + "/bgmusic.mp3", // 适配 GitHub Pages
   },
 };
 // ========================
